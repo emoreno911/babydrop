@@ -1,4 +1,5 @@
 import AppLayout from "@/src/components/common/app-layout";
+import TokenInfo from "@/src/components/common/token-info";
 import Link from "next/link";
 
 export default function Home() {
@@ -8,11 +9,7 @@ export default function Home() {
 				<p className="text-5xl font-semibold">Babydrop</p>
 				<p className="text-xl py-8">Send BabyDoge to anyone without a wallet</p>
 
-				<Link href={"/"}>
-					<div className="box-home w-48 font-semibold border bg-purple-400 text-center rounded-md py-3 px-6">
-						<span>Connect Wallet</span>
-					</div>
-				</Link>
+				<TokenInfo />
 			</div>
 		</AppLayout>
     );
