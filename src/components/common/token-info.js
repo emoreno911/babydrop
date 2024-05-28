@@ -6,7 +6,7 @@ import { formatUnits } from "viem"
 const TokenInfo = () => {
     const { 
         data: { tokenInfo },
-        fn: { sendTokens, sayHelloBlockchain } 
+        fn: { sendTokens, makeDeposit, makeValidate } 
     } = useApp()
 
     if (Object.keys(tokenInfo).length === 0)
@@ -19,13 +19,22 @@ const TokenInfo = () => {
             <div>Name: {tokenInfo.name}</div>
             <div>Balance: {formatUnits(tokenInfo.balance, tokenInfo.decimals)}</div>
 
-            <div className="my-8">
+            <div className="my-4">
                 <button
                     type="button"
-                    className="box-home w-48 font-semibold border bg-yellow-500 text-center rounded-md py-3 px-6"
-                    onClick={() => sayHelloBlockchain()}
+                    className="box-home w-48 font-semibold border text-slate-700 bg-yellow-500 text-center rounded-md py-3 px-6"
+                    onClick={() => makeDeposit(50)}
                 >
-                    Say Hello!!!
+                    Deposit 50 {tokenInfo.symbol}
+                </button>
+            </div>
+            <div className="my-4">
+                <button
+                    type="button"
+                    className="box-home w-48 font-semibold border text-white bg-blue-500 text-center rounded-md py-3 px-6"
+                    onClick={() => makeValidate() }
+                >
+                    Validate Deposit
                 </button>
             </div>
         </div>

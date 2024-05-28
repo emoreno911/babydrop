@@ -1,3 +1,5 @@
+import { bytesToHex } from "viem";
+
 export const fallbackNoImage = "/noimage.svg";
 export const cardThemeColors = "bg-white dark:bg-zinc-900";
 export const bodyThemeColors =
@@ -32,4 +34,13 @@ export const toFixedIfNecessary = (value, dp) => {
 
 export function sleep(ms) {
     return new Promise((val) => setTimeout(val, ms));
+}
+
+export const makeHash = async (string) => {
+	const utf8 = new TextEncoder().encode(string);
+	const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = bytesToHex(new Uint32Array(hashArray));
+
+	return hashHex; //hashArray;
 }
