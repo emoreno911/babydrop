@@ -44,3 +44,43 @@ export const makeHash = async (string) => {
 
 	return hashHex; //hashArray;
 }
+
+export const storeLocalDeposit = (depositId, amount, token, txid, network) => {
+	const storeName = "bbdDeposits";
+	const obj = { depositId, amount, token, txid, network };
+	
+	let existing = localStorage.getItem(storeName);
+	let arr = existing === null ? [] : JSON.parse(existing);
+	arr.push(obj);
+	localStorage.setItem(storeName, JSON.stringify(arr));
+}
+
+export const listDeposits = () => {
+    if (typeof localStorage === "undefined") return
+	const storeName = "bbdDeposits";
+	let existing = localStorage.getItem(storeName);
+	let arr = JSON.parse(existing);
+	let view = arr.map((o,i) => `\n${i+1}) ${o.amount} | ${o.token} | ${o.depositId}`)
+	//console.log(view.join(''))
+	return view
+}
+
+export async function postJSON(url, data) {
+    let result = null;
+    try {
+      const response = await fetch(url, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      result = await response.json();
+      //console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    return result
+}

@@ -2,8 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, createPublicClient, bytesToHex } from "viem";
 import { bsc, bscTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
-import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain, wsbContract } from "./constants";
-import { getContractInstance, makeTransaction, setDeposit, validateClaim } from "./service";
+import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain } from "./constants";
+import { createDeposit, makeTransaction, setDeposit, validateClaim } from "./service";
 import { makeHash, storeLocalDeposit } from "./lib/myutils";
 
 const DataContext = createContext();
@@ -43,7 +43,7 @@ const AppProvider = (props) => {
 		console.log("fn updateUIValues");
 	}
 
-	const getContractInstanceXYZ = (contractAddr, abi) => {
+	const getContractInstance = (contractAddr, abi) => {
 		const publicClient = createPublicClient({
 			chain: currentChain,
 			transport: http(),
@@ -61,13 +61,7 @@ const AppProvider = (props) => {
 
 	const getAccountData = async (address) => { 
 		console.log("fn getAccountData");
-		// const contract = getContractInstance(
-		// 	walletClient,
-		// 	babyDogeContactAddress, 
-		// 	erc20Abi,
-		// 	currentChain
-		// );
-		const contract = getContractInstanceXYZ(babyDogeContactAddress, erc20Abi);
+		const contract = getContractInstance(babyDogeContactAddress, erc20Abi);
 
 		const symbol = await contract.read.symbol();
 		const name = await contract.read.name();
@@ -81,48 +75,36 @@ const AppProvider = (props) => {
 		})
 	}
 
-	const sendTokens = async (
-        tokenAmount = 50,
-        toAddress = "0x21a0Ba775050F4E7EC70952093ef4c799a5f0d6b"
-    ) => { 
-		console.log("fn sendTokens");
-		const vmAmount = parseUnits(`${tokenAmount}`, tokenInfo.decimals)
-		const contract = getContractInstanceXYZ(babyDogeContactAddress, erc20Abi);
-
-		console.log(vmAmount)
-		const hash = await contract.write.transfer([toAddress, vmAmount])
-
-		console.log(vmAmount, hash)
-		return hash
-	}
-
-	const makeDeposit = async (amount) => {
+	const makeDeposit = async (amount, pwd = "") => {
 		// transfer assets
-		const tokenContract = getContractInstanceXYZ(babyDogeContactAddress, erc20Abi);
+		const tokenContract = getContractInstance(babyDogeContactAddress, erc20Abi);
 		let tokenTX = await makeTransaction(tokenContract, amount, bbDropProtocolAddress, tokenInfo.decimals)
 		if (tokenTX === null) {
-			console.log('TokenTX', tokenTX);
+			console.log('fail TokenTX', tokenTX);
 			return tokenTX;
 		}
 
-		const protocolContract = getContractInstanceXYZ(bbDropProtocolAddress, bbDropProtocolABI);
-		let hash = await makeHash("");
-		let result = await setDeposit(protocolContract, {
-			amount, 
-			sender: address, 
-			contractAddr: babyDogeContactAddress, 
-			hash
-		});
+		// let hash = await makeHash(pwd);
+		// let result = await createDeposit({
+		// 	hash,
+		// 	amount, 
+		// 	sender: address, 
+		// 	contractAddr: babyDogeContactAddress,
+		// 	chainId: currentChain.id
+		// })
 
-		storeLocalDeposit(result.depositId, amount, tokenInfo.symbol, tokenTX)
-		console.log('Deposit', result);
+		// if (!result.error) {
+		// 	storeLocalDeposit(result.depositId, amount, tokenInfo.symbol, "", currentChain.name)
+		// }
+
+		// console.log('Deposit', result);
 		console.log('TokenTX', tokenTX);
 		return result;
 	}
 
-	const makeValidate = async () => {
-		const protocolContract = getContractInstanceXYZ(bbDropProtocolAddress, bbDropProtocolABI);
-		let response = await validateClaim(protocolContract, "794cc623-24af-4c69-a1c3-a20f7847ef7b", "")
+	const makeValidate = async (id, pwd) => {
+		const protocolContract = getContractInstance(bbDropProtocolAddress, bbDropProtocolABI);
+		let response = await validateClaim(protocolContract, id, pwd) // "794cc623-24af-4c69-a1c3-a20f7847ef7b" "e68a6891-6711-452a-8a11-89e0e2515d63"
 		if (response === null) {
 			alert("Invalid password")
 			return null;
@@ -144,6 +126,7 @@ const AppProvider = (props) => {
 	const makeClaim = async () => {}
 
     const data = {
+		validatedData,
         walletClient,
         loaderMessage,
 		tokenInfo
@@ -151,7 +134,6 @@ const AppProvider = (props) => {
 
     const fn = {
         setLoaderMessage,
-		sendTokens,
 		makeDeposit,
 		makeValidate
     };

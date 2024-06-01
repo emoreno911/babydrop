@@ -1,21 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { http, custom, parseUnits, getContract, createPublicClient } from "viem";
+import { parseUnits } from "viem";
+import { postJSON } from '../lib/myutils';
 
-
-export const getContractInstance = (walletClient, contractAddr, abi, currentChain) => {
-    const publicClient = createPublicClient({
-        chain: currentChain,
-        transport: http(),
-    })
-
-    const contract = getContract({
-        address: contractAddr,
-        abi,
-        client: { public: publicClient, wallet: walletClient }
-    })
-
-    return contract
-}
 
 // get user babydoge balance
 export const getTokenInfo = async (contract, userAddr) => {
@@ -87,8 +73,40 @@ export const validateClaim = async (contract, id, pwd) => {
 }
 
 // async function getSCWallet(socialid)
-
 // api methods
+export const createDeposit = async (data) => {
+    const response = await postJSON("/api", {
+        fname: "create",
+        data
+    })
+
+    console.log(response)
+    return response
+}
+
 // executeClaim
+export const executeClaim = async (id, pwd, toAddress) => {
+    const response = await postJSON("/api", {
+        fname: "deploy",
+        data: {
+            id,
+            pwd,
+            toAddress
+        }
+    })
+
+    console.log(response)
+    return response
+}
+
 // deploySCWallet
+export const deploySCWallet = async (data) => {
+    const response = await postJSON("/api", {
+        fname: "deploy",
+        data
+    })
+
+    console.log(response)
+    return response
+}
 // withdrawFromSCWallet
