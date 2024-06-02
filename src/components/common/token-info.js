@@ -43,24 +43,16 @@ const TokenInfo = () => {
     }
 
     async function dosomething() {
-        // const res = await createDeposit({
-        //     "hash": "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        //     "amount": 35,
-        //     "sender": "0x312e4dc8DDefAa37361e330E4495e80B0D0509Db",
-        //     "contractAddr": "0x9a01bf917477dD9F5D715D188618fc8B7350cd22",
-        //     "chainId": 97
-        // })
-
         const res = await deploySCWallet({msg:"hello"})
 
         console.log(res)
     }
 
     const localDeposits = listDeposits()
-    const validateLast = async () => {
-        const [a,t,id] = localDeposits[0].split("|")
-        const result = await makeValidate(id.trim(), "")
-        console.log(result)
+    const showLink = async (row) => {
+        const [a,t,id] = row.split("|")
+        //console.log(`${window.location.origin}/link/${id.trim()}`)
+        window.location.replace(`${window.location.origin}/link/${id.trim()}`)
     }
 
     if (Object.keys(tokenInfo).length === 0)
@@ -94,21 +86,29 @@ const TokenInfo = () => {
                 </button>
             </div>
             <div className="my-4">
-                <pre>{localDeposits.join("")}</pre>
-                <button
-                    type="button"
-                    className="box-home font-semibold text-white bg-blue-500 text-center rounded-md py-1 px-6 my-2"
-                    onClick={() => validateLast() }
-                >
-                    Validate Last Deposit
-                </button>
+                {
+                    localDeposits.map(row => (
+                        <div key={row} className="flex items-center gap-2 mb-2">
+                            <div>{row}</div>
+                            <div>
+                                <button
+                                    type="button"
+                                    className="box-home font-semibold text-white text-xs bg-blue-500 text-center rounded-md py-1 px-6"
+                                    onClick={() => showLink(row) }
+                                >
+                                    Show Link
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                }              
 
                 <button
                     type="button"
-                    className="block font-semibold text-white bg-purple-500 text-center rounded-md py-1 px-6 my-2"
+                    className="block font-semibold text-white bg-purple-500 text-center rounded-md py-1 px-6 my-5"
                     onClick={() => dosomething()}
                 >
-                    Call create service
+                    Call Deploy service
                 </button>
             </div>
         </div>

@@ -32,10 +32,10 @@ const AppProvider = (props) => {
         });
 
         setWalletClient(_walletClient);
-        getAccountData(address) // events from user
+        //getAccountData(address) // events from user
     }, [address]);
 
-    const initAccountWithWallet = async () => {
+    const connectWalletAccount = async () => {
         console.log("init accounts...");
     };
 
@@ -84,29 +84,29 @@ const AppProvider = (props) => {
 			return tokenTX;
 		}
 
-		// let hash = await makeHash(pwd);
-		// let result = await createDeposit({
-		// 	hash,
-		// 	amount, 
-		// 	sender: address, 
-		// 	contractAddr: babyDogeContactAddress,
-		// 	chainId: currentChain.id
-		// })
+		let hash = await makeHash(pwd);
+		let result = await createDeposit({
+			hash,
+			amount, 
+			sender: address, 
+			contractAddr: babyDogeContactAddress,
+			chainId: currentChain.id
+		})
 
-		// if (!result.error) {
-		// 	storeLocalDeposit(result.depositId, amount, tokenInfo.symbol, "", currentChain.name)
-		// }
+		if (!result.error) {
+			storeLocalDeposit(result.depositId, amount, tokenInfo.symbol, "", currentChain.name)
+		}
 
-		// console.log('Deposit', result);
+		console.log('Deposit', result);
 		console.log('TokenTX', tokenTX);
 		return result;
 	}
 
 	const makeValidate = async (id, pwd) => {
 		const protocolContract = getContractInstance(bbDropProtocolAddress, bbDropProtocolABI);
-		let response = await validateClaim(protocolContract, id, pwd) // "794cc623-24af-4c69-a1c3-a20f7847ef7b" "e68a6891-6711-452a-8a11-89e0e2515d63"
+		let response = await validateClaim(protocolContract, id, pwd);
+		
 		if (response === null) {
-			alert("Invalid password")
 			return null;
 		}
 		else {
@@ -123,7 +123,10 @@ const AppProvider = (props) => {
 		}
 	}
 
-	const makeClaim = async () => {}
+	const makeClaim = async (data) => {
+		console.log("make claim", data)
+		return {}
+	}
 
     const data = {
 		validatedData,
@@ -133,9 +136,11 @@ const AppProvider = (props) => {
     };
 
     const fn = {
+		connectWalletAccount,
         setLoaderMessage,
 		makeDeposit,
-		makeValidate
+		makeValidate,
+		makeClaim
     };
 
     return (

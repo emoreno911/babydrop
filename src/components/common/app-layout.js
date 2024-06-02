@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 const Navigation = () => {
@@ -16,9 +17,11 @@ const Navigation = () => {
                         src="/favicon.png"
                         alt="App logo"
                     />
-                    <span className="font-mono text-xl font-bold">
-                        Babydrop
-                    </span>
+                    <Link href={"/"}>
+                        <span className="font-mono text-xl font-bold">
+                            Babydrop
+                        </span>
+                    </Link>
                 </div>
                 <div className="flex items-center mr-4">
                     {accountAddress ? (
