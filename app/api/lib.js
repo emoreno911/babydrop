@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { 
+    socialWalletAddress,
     bbDropProtocolABI, 
-    bbDropProtocolAddress 
+    bbDropProtocolAddress, 
+    socialWalletABI
 } from "@/src/constants";
 import { privateKeyToAccount } from 'viem/accounts'
 import {
@@ -29,7 +31,6 @@ const getContractInstance = (contractAddr, abi, chainId) => {
         transport: http(),
     })
 
-    // get user babydoge balance
     const contract = getContract({
         abi,
         address: contractAddr,
@@ -78,7 +79,7 @@ export async function create(data) {
 
 export async function claim(data) {
     const {
-        chain,
+        chainId,
         id,
         pwd,
         toAddress
@@ -87,7 +88,7 @@ export async function claim(data) {
     const contract = getContractInstance(
         bbDropProtocolABI, 
         bbDropProtocolAddress, 
-        chain
+        chainId
     );
 
     try {
@@ -98,7 +99,6 @@ export async function claim(data) {
         ])
         logmessage(`=== Deposit claimed ${id}`);
         return {
-            depositId: id,
             result
         }
     } catch (error) {
@@ -108,25 +108,82 @@ export async function claim(data) {
 }
 
 export async function deploy(data) {
-    // const contract = getContractInstance(
-    //     bbDropProtocolABI, 
-    //     bbDropProtocolAddress, 
-    //     chain
-    // );
+    const {
+        chainId,
+        socialid,
+        pincode
+    } = data;
 
-    const account = privateKeyToAccount(process.env.BUILD_ACCOUNT_PK)
-    logmessage(`=== Account ${account.address}`);
+    const contract = getContractInstance(
+        bbDropProtocolABI, 
+        bbDropProtocolAddress, 
+        chainId
+    );
 
-    return {
-        addr: account.address,
-        data
+    try {
+        const walletImplementation = socialWalletAddress;
+        const result = await contract.write.deploySocialWallet([
+            walletImplementation,
+            socialid,
+            pincode
+        ])
+
+        logmessage(`=== Wallet deployed ${id}`);
+        return {
+            address: result
+        } 
+    } catch (error) {
+        console.log('=== deploy error', error)
+        return { error: true }
     }
 }
 
-// walletAbi
 export async function withdraw(data) {
-    return {
-        fn: "withdraw tokens",
-        data
+    const {
+        chainId,
+        socialWalletAddr, 
+        amount, 
+        toAddress, 
+        pincode, 
+        contractAddr
+    } = data;
+
+    const contract = getContractInstance(
+        socialWalletABI, 
+        socialWalletAddr, 
+        chainId
+    );
+
+    try {
+        const isValidPin = await checkPinHash(contract, pincode);
+        if (!isValidPin) {
+            return {
+                error: true,
+                result: "INVALID_PINCODE"
+            }
+        }
+
+        const result = await contract.write.withdrawToken([
+            contractAddr,
+            amount,
+            toAddress
+        ])
+
+        logmessage(`=== Withdrawal success ${id}`);
+        return {
+            result
+        } 
+    } catch (error) {
+        console.log('=== withdraw error', error)
+        return { 
+            error: true,
+            result: "WITHDRAW_ERROR" 
+        }
     }
+}
+
+async function checkPinHash(socialWalletContract, pincode) {
+    const pinHash = await socialWalletContract.read.getPinHash();
+    const pinHex = crypto.createHash('sha256').update(pincode).digest('hex');
+    return `0x${pinHex}` === pinHash; // CHECK!!!
 }

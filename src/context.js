@@ -3,7 +3,7 @@ import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, cr
 import { bsc, bscTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain } from "./constants";
-import { createDeposit, makeTransaction, setDeposit, validateClaim } from "./service";
+import { createDeposit, deploySCWallet, executeClaim, makeTransaction, setDeposit, validateClaim } from "./service";
 import { makeHash, storeLocalDeposit } from "./lib/myutils";
 
 const DataContext = createContext();
@@ -32,7 +32,7 @@ const AppProvider = (props) => {
         });
 
         setWalletClient(_walletClient);
-        //getAccountData(address) // events from user
+        getAccountData(address) // events from user
     }, [address]);
 
     const connectWalletAccount = async () => {
@@ -123,9 +123,52 @@ const AppProvider = (props) => {
 		}
 	}
 
-	const makeClaim = async (data) => {
-		console.log("make claim", data)
-		return {}
+	const makeClaim = async (data, isSocialWallet = false) => {
+		if (Object.keys(validatedData).length === 0) // claim not validated
+			return null;
+
+		let toAddress = data.address;
+		let newWallet = null;
+
+		if (isSocialWallet) {
+			const { socialid, pincode, address } = data;
+
+			if (address !== null) {
+				toAddress = address;
+				newWallet = address;
+			}
+			else {
+				let socialWallet = await deploySCWallet({
+					chainId: currentChain.id,
+					socialid,
+					pincode
+				})
+
+				if (socialWallet.error) {
+					return socialWallet
+				}
+
+				toAddress = socialWallet.address;
+				newWallet = socialWallet.address;
+			}
+		}
+
+		let result = await executeClaim({
+			chainId: currentChain.id,
+			id: validatedData.id,
+			pwd: validatedData.pwd,
+			toAddress,
+		});
+
+		if (!result.error) {
+			setValidatedData({});
+		}
+
+		console.log('Claim Done', data, result);
+		return {
+			newWallet, 
+			...result
+		};
 	}
 
     const data = {

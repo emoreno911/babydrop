@@ -85,14 +85,10 @@ export const createDeposit = async (data) => {
 }
 
 // executeClaim
-export const executeClaim = async (id, pwd, toAddress) => {
+export const executeClaim = async (data) => {
     const response = await postJSON("/api", {
-        fname: "deploy",
-        data: {
-            id,
-            pwd,
-            toAddress
-        }
+        fname: "claim",
+        data
     })
 
     console.log(response)

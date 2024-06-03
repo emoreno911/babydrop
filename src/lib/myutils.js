@@ -56,12 +56,12 @@ export const storeLocalDeposit = (depositId, amount, token, txid, network) => {
 }
 
 export const listDeposits = () => {
-    if (typeof localStorage === "undefined") return
+    if (typeof localStorage === "undefined") return [];
 	const storeName = "bbdDeposits";
 	let existing = localStorage.getItem(storeName);
+    if (!existing) return [];
 	let arr = JSON.parse(existing);
-	let view = arr.map((o,i) => `\n${i+1}) ${o.amount} | ${o.token} | ${o.depositId}`)
-	//console.log(view.join(''))
+	let view = arr.map((o,i) => `${i+1}) ${o.amount} | ${o.token} | ${o.depositId}`)
 	return view
 }
 

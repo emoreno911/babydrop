@@ -8,6 +8,12 @@ const Navigation = () => {
     const { connectors, connect } = useConnect();
     const { disconnect } = useDisconnect();
 
+    const handleDisconnect = () => {
+        if (window.confirm("Do you want to disconnect your wallet?")) {
+            disconnect({ connector: connectors[0] })
+        }
+    }
+
     return (
         <header className="z-10 fixed top-0 left-0 w-full py-3 text-slate-100 bg-slate-900 dark:bg-slate-900">
             <div className="flex max-w-5xl w-full mx-auto">
@@ -25,7 +31,13 @@ const Navigation = () => {
                 </div>
                 <div className="flex items-center mr-4">
                     {accountAddress ? (
-                        <div className="font-mono">{`${accountAddress.slice(0, 5)}..${accountAddress.slice(accountAddress.length - 4)}`}</div>
+                        <button
+                            onClick={() => handleDisconnect()}
+                        >
+                            <div className="font-mono">
+                                {`${accountAddress.slice(0, 5)}..${accountAddress.slice(accountAddress.length - 4)}`}
+                            </div>
+                        </button>
                     ) : (
                         <button
                             onClick={() => connect({ connector: connectors[0] })}

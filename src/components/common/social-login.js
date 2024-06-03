@@ -1,6 +1,5 @@
-const signInWithGoogle = () => {
-    console.log("connecting google account...")
-}
+import { signInWithGoogle } from "@/src/lib/firebase"
+
 
 const SocialLogin = () => (
     <ul className="my-5 w-full">

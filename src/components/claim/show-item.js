@@ -32,7 +32,7 @@ const ShowItem = ({ item }) => {
                         !wasClaimed && (
                             <>
                                 <ModalPairWallet 
-                                    buttonText={"Connect Wallet and Claim"} 
+                                    buttonText={"Claim with Your Wallet"} 
                                     item={item}
                                     disableClaim={disableClaim}
                                     setDisableClaim={setDisableClaim}

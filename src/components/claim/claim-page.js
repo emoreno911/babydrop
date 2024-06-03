@@ -11,13 +11,19 @@ const ClaimPage = ({ id }) => {
         fn: { makeValidate } 
     } = useApp()
 
-    const [isValidated, setIsValidated] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("")
-    const [item, setItem] = useState({ amount: 60, sender: "@0xedu", isClaimed: "0", tokenContractAddr: "0x0ABC" });
-
+    const [errorMessage, setErrorMessage] = useState("");
+    
+    const [isValidated, setIsValidated] = useState(false);
+    const [item, setItem] = useState(null);
     useEffect(() => {  
-        //setIsValidated(false)
+        setIsValidated(false)
     }, [window.location.href])
+
+    // const [item, setItem] = useState({ amount: 60, sender: "@0xedu", isClaimed: "0", tokenContractAddr: "0x0ABC" });
+    // const [isValidated, setIsValidated] = useState(true);
+    // useEffect(() => {  
+    //     setIsValidated(true)
+    // }, [window.location.href])
 
     const submitValidation = async (pwd) => { 
         setErrorMessage("");

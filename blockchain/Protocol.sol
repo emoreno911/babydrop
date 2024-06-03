@@ -19,6 +19,10 @@ interface IERC20 {
         returns (bool);
 }
 
+interface ISocialWallet {
+    function init(address deployer, string memory _name, bytes32 _pincode) external;
+}
+
 contract BBDropProtocol {
     IERC20 _token20;
     
@@ -36,6 +40,8 @@ contract BBDropProtocol {
     
     address public owner;
 
+    mapping(string => address) private socialWallets;
+
     mapping(string => Deposit) public deposits;
 
     mapping(string => bytes32) private hashes;
@@ -45,6 +51,8 @@ contract BBDropProtocol {
     event DepositClaimed(string id, address beneficiary);
 
     event TransferReceived(address indexed _from, uint _value);
+
+    event SocialWalletCreated(address addr);
     
     constructor() {
         owner = msg.sender;
@@ -61,6 +69,10 @@ contract BBDropProtocol {
 
     function getBalance() public view returns (uint) {
         return address(this).balance;
+    }
+
+    function getSocialWallet(string memory socialid) public view returns (address) {
+        return socialWallets[socialid];
     }
 
     function createDeposit(
@@ -149,6 +161,31 @@ contract BBDropProtocol {
             value /= 10;
         }
         return string(buffer);
+    }
+
+    function deploySocialWallet(
+        address implementation, 
+        string memory socialid,
+        bytes32 pincode
+    ) external onlyOwner returns (address proxy) {
+        bytes20 targetBytes = bytes20(implementation);
+        assembly {
+            let clone := mload(0x40)
+            mstore(
+                clone,
+                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
+            )
+            mstore(add(clone, 0x14), targetBytes)
+            mstore(
+                add(clone, 0x28),
+                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
+            )
+            proxy := create(0, clone, 0x37)
+        }
+
+        ISocialWallet(proxy).init(msg.sender, socialid, pincode);
+        socialWallets[socialid] = proxy;
+        emit SocialWalletCreated(proxy);
     }
 
 }
