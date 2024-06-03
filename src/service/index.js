@@ -23,12 +23,10 @@ export const getTokenInfo = async (contract, userAddr) => {
     }
 }
 
-export const makeTransaction = async (contract, tokenAmount, toAddress, decimals) => {
-    const vmAmount = parseUnits(`${tokenAmount}`, decimals)
-
+export const makeTransaction = async (contract, tokenAmount, toAddress) => {
     try {
-        const hash = await contract.write.transfer([toAddress, vmAmount])
-		console.log(vmAmount, hash)
+        const hash = await contract.write.transfer([toAddress, tokenAmount])
+		console.log(tokenAmount, hash)
 		return hash
     } catch (error) {
         console.log('makeTransaction', error)
@@ -68,6 +66,17 @@ export const validateClaim = async (contract, id, pwd) => {
         return result
     } catch (error) {
         console.log('validateClaim', error)
+        return null
+    }
+}
+
+export const getSocialWallet = async (contract, socialid) => {
+    try {
+        const result = await contract.read.getSocialWallet([socialid]);
+        console.log(result)
+        return result
+    } catch (error) {
+        console.log('getSocialWallet', error)
         return null
     }
 }

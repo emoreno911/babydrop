@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalPairWallet from "./modal-pair-wallet";
 import ModalSocialWallet from "./modal-social-wallet";
 
@@ -6,7 +6,7 @@ const ShowItem = ({ item }) => {
     const { amount, sender, isClaimed, tokenContractAddr } = item
     const symbol = "BABYDOGE"
 
-    const [disableClaim, setDisableClaim] = useState(false);
+    const [claimComplete, setClaimComplete] = useState(false);
     const [wasClaimed, setWasClaimed] = useState(isClaimed !== "0");
     const claimedText = wasClaimed ? "was already Claimed" : "is available for Claim";
 
@@ -34,14 +34,14 @@ const ShowItem = ({ item }) => {
                                 <ModalPairWallet 
                                     buttonText={"Claim with Your Wallet"} 
                                     item={item}
-                                    disableClaim={disableClaim}
-                                    setDisableClaim={setDisableClaim}
+                                    claimComplete={claimComplete}
+                                    setClaimComplete={setClaimComplete}
                                 />
                                 <ModalSocialWallet 
                                     buttonText={"Claim with Social Account"} 
                                     item={item}
-                                    disableClaim={disableClaim}
-                                    setDisableClaim={setDisableClaim}
+                                    claimComplete={claimComplete}
+                                    setClaimComplete={setClaimComplete}
                                 />
                             </>
                         )

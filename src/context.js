@@ -3,8 +3,8 @@ import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, cr
 import { bsc, bscTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain } from "./constants";
-import { createDeposit, deploySCWallet, executeClaim, makeTransaction, setDeposit, validateClaim } from "./service";
-import { makeHash, storeLocalDeposit } from "./lib/myutils";
+import { createDeposit, deploySCWallet, executeClaim, makeTransaction, validateClaim, getSocialWallet } from "./service";
+import { divideByDecimals, makeHash, multiplyByDecimals, storeLocalDeposit } from "./lib/myutils";
 
 const DataContext = createContext();
 export const useApp = () => useContext(DataContext);
@@ -75,19 +75,27 @@ const AppProvider = (props) => {
 		})
 	}
 
+	const getSocialWalletAddress = async (socialid) => {
+		const protocolContract = getContractInstance(bbDropProtocolAddress, bbDropProtocolABI);
+		const result = await getSocialWallet(protocolContract, socialid);
+		return result;
+	}
+
 	const makeDeposit = async (amount, pwd = "") => {
 		// transfer assets
-		const tokenContract = getContractInstance(babyDogeContactAddress, erc20Abi);
-		let tokenTX = await makeTransaction(tokenContract, amount, bbDropProtocolAddress, tokenInfo.decimals)
-		if (tokenTX === null) {
-			console.log('fail TokenTX', tokenTX);
-			return tokenTX;
-		}
+		const vmAmount = parseUnits(`${amount}`, tokenInfo.decimals);
+
+		// const tokenContract = getContractInstance(babyDogeContactAddress, erc20Abi);
+		// let tokenTX = await makeTransaction(tokenContract, vmAmount, bbDropProtocolAddress)
+		// if (tokenTX === null) {
+		// 	console.log('fail TokenTX', tokenTX);
+		// 	return tokenTX;
+		// }
 
 		let hash = await makeHash(pwd);
 		let result = await createDeposit({
 			hash,
-			amount, 
+			amount: multiplyByDecimals(amount, tokenInfo.decimals), 
 			sender: address, 
 			contractAddr: babyDogeContactAddress,
 			chainId: currentChain.id
@@ -98,7 +106,7 @@ const AppProvider = (props) => {
 		}
 
 		console.log('Deposit', result);
-		console.log('TokenTX', tokenTX);
+		//console.log('TokenTX', tokenTX);
 		return result;
 	}
 
@@ -112,10 +120,13 @@ const AppProvider = (props) => {
 		else {
 			const [deposit, tokenContractAddr] = response;
 			const [amount, sender, isClaimed] = deposit.split('|')
+			const decimalAmount = divideByDecimals(amount, tokenInfo.decimals)
 			const result = {
-				amount, 
+				id,
+				pwd, 
 				sender, 
 				isClaimed,
+				amount: decimalAmount,
 				tokenContractAddr
 			}
 			setValidatedData(result)
@@ -143,6 +154,7 @@ const AppProvider = (props) => {
 					socialid,
 					pincode
 				})
+				console.log("socialWallet", socialWallet)
 
 				if (socialWallet.error) {
 					return socialWallet
@@ -172,6 +184,7 @@ const AppProvider = (props) => {
 	}
 
     const data = {
+		currentChain,
 		validatedData,
         walletClient,
         loaderMessage,
@@ -179,6 +192,7 @@ const AppProvider = (props) => {
     };
 
     const fn = {
+		getSocialWalletAddress,
 		connectWalletAccount,
         setLoaderMessage,
 		makeDeposit,

@@ -3,18 +3,17 @@ import { useRef, useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/src/lib/firebase";
 import { useApp } from "@/src/context";
+import { isNullAddress, makeHash } from "@/src/lib/myutils";
 import Modal from "../common/modal";
 import SocialLogin from "../common/social-login";
-import { makeHash } from "@/src/lib/myutils";
 
 
-const ModalSocialWallet = ({ buttonText, item, disableClaim, setDisableClaim }) => {
+const ModalSocialWallet = ({ buttonText, item, claimComplete, setClaimComplete }) => {
     const { 
-		fn:{ makeClaim }		 
+		fn:{ makeClaim, getSocialWalletAddress }		 
 	} = useApp();
 
     const [socialWalletAddr, setSocialWalletAddr] = useState(null);
-	const [claimComplete, setClaimComplete] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const pincodeInput = useRef();
@@ -28,13 +27,41 @@ const ModalSocialWallet = ({ buttonText, item, disableClaim, setDisableClaim }) 
     }, [user])
 
     const checkSocialWalletAddress = async () => { 
-        console.log("checking...")
+        let _socialWalletAddr = await getSocialWalletAddress(user.uid);
+        let addr = isNullAddress(_socialWalletAddr) ? null : _socialWalletAddr;
+        console.log(addr, _socialWalletAddr)
+        setSocialWalletAddr(addr);
     }
 
     const handleClaimTokens = async () => {
-        const h = await makeHash("000000")
-        console.log("checking hash...")
-        console.log(h)
+        if (claimComplete)
+			return;
+
+        // if no PinModule we hardcode a random pincode to pass the verification
+        const _pincode = socialWalletAddr === null ? pincodeInput.current.value : "000000";
+
+        setErrorMessage("");
+        const isSixDigitsPin = /\b\d{6}\b/g.test(_pincode);
+        if (!isSixDigitsPin) {
+            setErrorMessage("Pincode must contain exactly 6 digits")
+            return;
+        }
+
+        setIsProcessing(true);
+        let pincode = await makeHash(_pincode)
+        const data = {
+            pincode,
+            socialid: user.uid,
+            address: socialWalletAddr
+        }
+
+        let res = await makeClaim(data, true);
+        if (!res.error) {
+            setSocialWalletAddr(res.newWallet)
+            setClaimComplete(true)
+        }
+        
+        setIsProcessing(false);
     }
 
     const helpText = socialWalletAddr === null ?
@@ -103,7 +130,7 @@ const ModalSocialWallet = ({ buttonText, item, disableClaim, setDisableClaim }) 
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <div>
-                                            <Link to={`/socialwallet`}>
+                                            <Link href={`/`}>
                                                 <span className="block text-md text-yellow-400">
                                                     Go to Social Wallet
                                                 </span>

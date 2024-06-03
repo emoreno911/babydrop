@@ -36,7 +36,7 @@ const logout = () => {
   signOut(auth);
 }
 
-window.logout10 = logout;
+//window.logout10 = logout;
 
 export {
   auth,

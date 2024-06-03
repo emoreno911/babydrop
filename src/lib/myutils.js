@@ -32,6 +32,16 @@ export const toFixedIfNecessary = (value, dp) => {
     return +parseFloat(value).toFixed(dp);
 }
 
+export const divideByDecimals = (num, decimals) => {
+	const divider = parseInt(`1${Array(decimals).fill(0).join('')}`);
+	return toFixedIfNecessary(num/divider, 8);
+}
+
+export const multiplyByDecimals = (num, decimals) => {
+	const multiplier = parseInt(`1${Array(decimals).fill(0).join('')}`);
+	return toFixedIfNecessary(num*multiplier, 8);
+}
+
 export function sleep(ms) {
     return new Promise((val) => setTimeout(val, ms));
 }

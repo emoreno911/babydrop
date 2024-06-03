@@ -15,7 +15,7 @@ const Navigation = () => {
     }
 
     return (
-        <header className="z-10 fixed top-0 left-0 w-full py-3 text-slate-100 bg-slate-900 dark:bg-slate-900">
+        <header className="z-10 fixed top-0 left-0 w-full py-3 text-slate-100">
             <div className="flex max-w-5xl w-full mx-auto">
                 <div className="w-full flex items-center gap-1">
                     <img

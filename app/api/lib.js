@@ -86,8 +86,8 @@ export async function claim(data) {
     } = data;
 
     const contract = getContractInstance(
-        bbDropProtocolABI, 
         bbDropProtocolAddress, 
+        bbDropProtocolABI, 
         chainId
     );
 
@@ -115,8 +115,8 @@ export async function deploy(data) {
     } = data;
 
     const contract = getContractInstance(
-        bbDropProtocolABI, 
         bbDropProtocolAddress, 
+        bbDropProtocolABI, 
         chainId
     );
 
@@ -128,7 +128,7 @@ export async function deploy(data) {
             pincode
         ])
 
-        logmessage(`=== Wallet deployed ${id}`);
+        logmessage(`=== Wallet deployed ${result}`);
         return {
             address: result
         } 
@@ -149,8 +149,8 @@ export async function withdraw(data) {
     } = data;
 
     const contract = getContractInstance(
-        socialWalletABI, 
         socialWalletAddr, 
+        socialWalletABI, 
         chainId
     );
 
@@ -169,7 +169,7 @@ export async function withdraw(data) {
             toAddress
         ])
 
-        logmessage(`=== Withdrawal success ${id}`);
+        logmessage(`=== Withdrawal success ${result}`);
         return {
             result
         } 

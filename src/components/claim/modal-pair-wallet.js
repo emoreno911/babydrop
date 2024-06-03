@@ -5,8 +5,9 @@ import Modal from "../common/modal";
 import { isAddress } from "viem";
 
 
-const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) => {
+const ModalPairWallet = ({ buttonText, item, claimComplete, setClaimComplete }) => {
 	const { 
+        data: { currentChain },
 		fn:{ makeClaim }		 
 	} = useApp();
 
@@ -14,7 +15,6 @@ const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) =>
     const { isConnected, address } = useAccount();
     
     const [inputAddress, setInputAddress] = useState("");
-	const [claimComplete, setClaimComplete] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
 
@@ -24,7 +24,10 @@ const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) =>
         }
         else {
             connect(
-                { connector: connectors[0] }, 
+                { 
+                    connector: connectors[0], 
+                    //chainId: currentChain.id 
+                }, 
                 {
                     onSuccess: (data) => { setInputAddress(data.accounts[0]) },
                     onError: () => { console.log("wallet not connected") }
@@ -34,7 +37,7 @@ const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) =>
     }
 
 	const handleClaimTokens = async () => {
-		if (disableClaim)
+		if (claimComplete)
 			return;
 
         setErrorMessage("");
@@ -47,7 +50,6 @@ const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) =>
         let res = await makeClaim({address: inputAddress}, false);
         if (!res.error) {
             setClaimComplete(true)
-            setDisableClaim(true)
         }
         
         setIsProcessing(false);
@@ -102,7 +104,7 @@ const ModalPairWallet = ({ buttonText, item, disableClaim, setDisableClaim }) =>
                     ):
                     (
                         <div>
-                            <h4 className="text-xl font-bold my-4">Claim Completed!</h4>
+                            <h4 className="text-xl font-bold my-4 text-center">Claim Completed!</h4>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>

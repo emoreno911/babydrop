@@ -5,11 +5,14 @@ import { validate as uuidValidate } from 'uuid';
 import { useApp } from "@/src/context";
 import RequestPassword from "./request-password";
 import ShowItem from "./show-item";
+import { usePathname } from "next/navigation";
 
 const ClaimPage = ({ id }) => {
     const { 
         fn: { makeValidate } 
     } = useApp()
+
+    const pathname = usePathname()
 
     const [errorMessage, setErrorMessage] = useState("");
     
@@ -17,13 +20,7 @@ const ClaimPage = ({ id }) => {
     const [item, setItem] = useState(null);
     useEffect(() => {  
         setIsValidated(false)
-    }, [window.location.href])
-
-    // const [item, setItem] = useState({ amount: 60, sender: "@0xedu", isClaimed: "0", tokenContractAddr: "0x0ABC" });
-    // const [isValidated, setIsValidated] = useState(true);
-    // useEffect(() => {  
-    //     setIsValidated(true)
-    // }, [window.location.href])
+    }, [pathname])
 
     const submitValidation = async (pwd) => { 
         setErrorMessage("");
