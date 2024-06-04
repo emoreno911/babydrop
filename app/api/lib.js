@@ -11,8 +11,11 @@ import {
     createWalletClient,
     getContract,
     http,
+    publicActions,
 } from "viem";
 import { bsc, bscTestnet } from "viem/chains";
+
+const crypto = require('crypto');
 
 const logmessage = (str) => console.log('\x1b[33m%s\x1b[0m', str);
 
@@ -24,7 +27,7 @@ const getContractInstance = (contractAddr, abi, chainId) => {
         chain,
         account,
         transport: http(),
-    });
+    }).extend(publicActions) ;
 
     const publicClient = createPublicClient({
         chain,
@@ -34,7 +37,7 @@ const getContractInstance = (contractAddr, abi, chainId) => {
     const contract = getContract({
         abi,
         address: contractAddr,
-        client: { public: publicClient, wallet: walletClient }
+        client: { wallet: walletClient }
     })
 
     return contract
@@ -155,7 +158,7 @@ export async function withdraw(data) {
     );
 
     try {
-        const isValidPin = await checkPinHash(contract, pincode);
+        const isValidPin = await checkPinHash(pincode, chainId, socialWalletAddr);
         if (!isValidPin) {
             return {
                 error: true,
@@ -182,8 +185,22 @@ export async function withdraw(data) {
     }
 }
 
-async function checkPinHash(socialWalletContract, pincode) {
-    const pinHash = await socialWalletContract.read.getPinHash();
+async function checkPinHash(pincode, chainId, address) {
+    const account = privateKeyToAccount(process.env.BUILD_ACCOUNT_PK)
+    const chain = chainId === 56 ? bsc : bscTestnet
+
+    const publicClient = createPublicClient({
+        chain,
+        transport: http(),
+    })
+
+    const pinHash = await publicClient.readContract({
+        address,
+        abi: socialWalletABI,
+        functionName: 'getPinHash',
+        account: account.address
+    })
+
     const pinHex = crypto.createHash('sha256').update(pincode).digest('hex');
     return `0x${pinHex}` === pinHash; // CHECK!!!
 }

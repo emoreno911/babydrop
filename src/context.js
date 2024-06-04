@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, createPublicClient, bytesToHex } from "viem";
+import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, createPublicClient, bytesToHex, isAddress } from "viem";
 import { bsc, bscTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain } from "./constants";
-import { createDeposit, deploySCWallet, executeClaim, makeTransaction, validateClaim, getSocialWallet } from "./service";
+import { createDeposit, deploySCWallet, executeClaim, makeTransaction, validateClaim, getSocialWallet, withdrawFromSCWallet } from "./service";
 import { divideByDecimals, makeHash, multiplyByDecimals, storeLocalDeposit } from "./lib/myutils";
 
 const DataContext = createContext();
@@ -160,6 +160,13 @@ const AppProvider = (props) => {
 					return socialWallet
 				}
 
+				// maybe the result was a tx hash instead the expected address
+				if (!isAddress(socialWallet.address)) {
+					alert("Transaction error, please refresh and try again")
+					console.log("invalid social wallet address", {socialWallet})
+					return { error: true }
+				}
+
 				toAddress = socialWallet.address;
 				newWallet = socialWallet.address;
 			}
@@ -183,6 +190,14 @@ const AppProvider = (props) => {
 		};
 	}
 
+	const makeWithdrawal = async (data) => {
+		let result = await withdrawFromSCWallet({
+			chainId: currentChain.id,
+			...data
+		});
+		return result;
+	}
+
     const data = {
 		currentChain,
 		validatedData,
@@ -196,8 +211,9 @@ const AppProvider = (props) => {
 		getSocialWalletAddress,
 		connectWalletAccount,
         setLoaderMessage,
-		makeDeposit,
+		makeWithdrawal,
 		makeValidate,
+		makeDeposit,
 		makeClaim
     };
 

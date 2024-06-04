@@ -1,4 +1,4 @@
-import { bytesToHex } from "viem";
+import { bytesToHex, formatUnits } from "viem";
 
 export const fallbackNoImage = "/noimage.svg";
 export const cardThemeColors = "bg-white dark:bg-zinc-900";
@@ -40,6 +40,13 @@ export const divideByDecimals = (num, decimals) => {
 export const multiplyByDecimals = (num, decimals) => {
 	const multiplier = parseInt(`1${Array(decimals).fill(0).join('')}`);
 	return toFixedIfNecessary(num*multiplier, 8);
+}
+
+export const formatBalance = (balance, decimals) => {
+    const b = formatUnits(balance, decimals)
+    const c = toFixedIfNecessary(b, 2);
+
+    return new Intl.NumberFormat().format(c)
 }
 
 export function sleep(ms) {

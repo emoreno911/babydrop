@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link";
 import React, { useState } from "react";
 import {
     EmailShareButton,
@@ -80,6 +81,11 @@ const DepositLink = ({ id }) =>  {
                     >
                         <EmailIcon size={iconSize} round />
                     </EmailShareButton>
+                </div>
+                <div className="mt-5">
+                    <Link href="/">
+                        <span className="text-yellow-500 text-sm">Back to home</span>
+                    </Link>
                 </div>
             </div>
         </>

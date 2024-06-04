@@ -114,4 +114,14 @@ export const deploySCWallet = async (data) => {
     console.log(response)
     return response
 }
+
 // withdrawFromSCWallet
+export const withdrawFromSCWallet = async (data) => {
+    const response = await postJSON("/api", {
+        fname: "withdraw",
+        data
+    })
+
+    console.log(response)
+    return response
+}

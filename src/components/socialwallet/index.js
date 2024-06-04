@@ -1,15 +1,16 @@
 "use client"
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/src/lib/firebase";
 import { useApp } from "@/src/context";
-import { isNullAddress } from "@/src/lib/myutils";
-import SocialLogin from "../common/social-login";
+import { formatBalance, isNullAddress } from "@/src/lib/myutils";
 import { getTokenInfo } from "@/src/service";
 import { babyDogeContactAddress } from "@/src/constants";
-import { erc20Abi, formatUnits } from "viem";
+import { erc20Abi } from "viem";
+import SocialLogin from "../common/social-login";
+import WithdrawForm from "./withdraw-form";
 
 const SocialWallet = () => {
     const { 
@@ -17,11 +18,8 @@ const SocialWallet = () => {
 	} = useApp();
 
     const [tokenInfo, setTokenInfo] = useState({ balance:0, decimals:0 });
-    const [socialwalletAddr, setSocialWalletAddr] = useState(null);
+    const [socialWalletAddr, setSocialWalletAddr] = useState(null);
     const [user, loading, error] = useAuthState(auth);
-
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -67,14 +65,14 @@ const SocialWallet = () => {
                                 <p>{user.displayName}</p>
                                 <p>{user.email}</p>
                                 {
-                                    socialwalletAddr !== null && (
+                                    socialWalletAddr !== null && (
                                         <div>
                                             <a 
-                                                href={`https://bscscan.com/address/${socialwalletAddr}`} 
+                                                href={`https://bscscan.com/address/${socialWalletAddr}`} 
                                                 className="text-yellow-400"
                                                 target="_blank" 
                                             > 
-                                                {socialwalletAddr}
+                                                {socialWalletAddr}
                                             </a>
                                         </div>
                                     )
@@ -82,13 +80,16 @@ const SocialWallet = () => {
                             </div>
                         </div>
                         {
-                            socialwalletAddr === null ? 
+                            socialWalletAddr === null ? 
                             (
-                                <div>
-                                    <small className="mt-4 block text-gray-400">
+                                <div className="text-center">
+                                    <small className="mt-5 block text-gray-400">
                                         No wallet created for this user yet! <br/> 
                                         Claim a LINK to generate a Social Wallet
                                     </small>
+                                    <Link href="/">
+                                        <span className="text-yellow-500 text-sm">Back to home</span>
+                                    </Link>
                                 </div>
                             ) 
                             :
@@ -99,35 +100,14 @@ const SocialWallet = () => {
                                             Your Wallet Balance
                                         </h3>
                                         <div className="font-mono text-xl text-gray-400">
-                                            {formatUnits(tokenInfo.balance, tokenInfo.decimals)} {tokenInfo.symbol}
+                                            {formatBalance(tokenInfo.balance, tokenInfo.decimals)} {tokenInfo.symbol}
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-1 items-center mt-5">
-                                        <input
-                                            //ref={amountInput}
-                                            type="text"
-                                            placeholder="to address"
-                                            className="block w-full leading-normal w-48 flex-1 h-9 rounded-md px-3 py-1 relative text-gray-500" 
-                                        />
-                                        <input
-                                            //ref={passwordInput}
-                                            type="password"
-                                            placeholder="pincode"
-                                            className="block w-full leading-normal w-32 flex-1 h-9 rounded-md px-3 py-1 relative text-gray-500" 
-                                        />
-                                        <button
-                                            type="button"
-                                            className="font-semibold text-slate-900 bg-yellow-500 text-center rounded-md py-2 px-6"
-                                            onClick={() => {}}
-                                        >
-                                            { isProcessing ? "Processing..." : "Withdraw All" }
-                                        </button>
-                                    </div>
-
-                                    <div className="pt-2 pb-5">
-                                        { errorMessage && <small className="block text-red-400">{errorMessage}</small> }
-                                    </div>
+                                    <WithdrawForm 
+                                        tokenInfo={tokenInfo}
+                                        socialWalletAddr={socialWalletAddr}
+                                    />
 
                                     <div className="pb-0">
                                         <Link href="/">

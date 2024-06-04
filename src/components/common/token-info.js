@@ -6,12 +6,12 @@ import { useRef, useState } from "react"
 import { formatUnits } from "viem"
 import ModalMyLinks from "./modal-links"
 import { useAccount, useConnect } from "wagmi"
-import { toFixedIfNecessary } from "@/src/lib/myutils"
+import { formatBalance, toFixedIfNecessary } from "@/src/lib/myutils"
 
 const TokenInfo = () => {
     const { 
-        data: { tokenInfo },
-        fn: { makeDeposit, makeValidate } 
+        data: { tokenInfo, currentChain },
+        fn: { makeDeposit } 
     } = useApp()
 
     const { isConnected } = useAccount();
@@ -35,6 +35,14 @@ const TokenInfo = () => {
             return;
         }
 
+        if (isNaN(amount) || parseInt(amount) === 0) {
+            setErrorMessage("Invalid amount");
+            return;
+        }
+
+        const sure = confirm(`Do you want to create a link with ${amount} BabyDoge?`);
+        if (!sure) return;
+
         setIsProcessing(true);
         const response = await makeDeposit(amount, pwd);
 
@@ -47,20 +55,13 @@ const TokenInfo = () => {
             alert("Something went wrong! Try again.");
         }
     } 
-
-    const formatBalance = (balance, decimals) => {
-        const b = formatUnits(balance, decimals)
-        const c = toFixedIfNecessary(b, 2);
-
-        return new Intl.NumberFormat().format(c)
-    }
     
     if (!isConnected)
         return (
             <button
                 type="button"
                 className="w-full font-semibold text-lg bg-blue-500 text-center rounded-md py-3 px-6 mt-5"
-                onClick={() => connect({ connector: connectors[0] })}
+                onClick={() => connect({ connector: connectors[0], chainId: currentChain.id })}
             >
                 Generate Your First Link
             </button>
