@@ -24,7 +24,7 @@ const Navigation = () => {
                         alt="App logo"
                     />
                     <Link href={"/"}>
-                        <span className="font-mono text-xl font-bold">
+                        <span className="dapp-title text-xl font-bold">
                             Babydrop
                         </span>
                     </Link>
@@ -55,7 +55,7 @@ const Navigation = () => {
 const AppLayout = ({ children }) => {
     return (
         <main className="flex min-h-screen flex-col items-center justify-between px-3 lg:px-24 py-8">
-            <div className="z-10 max-w-5xl w-full text-sm pt-10">
+            <div className="z-10 max-w-5xl w-full">
                 <Navigation />
                 {children}
             </div>

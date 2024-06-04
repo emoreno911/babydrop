@@ -19,7 +19,7 @@ const EmptyPage = () => {
 
     return (
       <>
-        <div className="flex flex-col text-white text-center link-page">
+        <div className="flex flex-col text-white text-center mt-12 p-5">
           <h3 className="text-xl font-bold">Do you have a claim ID to submit?</h3>
           <div className="my-10">
             <div className="flex flex-wrap items-stretch w-full max-w-xl mx-auto relative">

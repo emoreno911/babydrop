@@ -81,7 +81,7 @@ contract BBDropProtocol {
         uint amount,
         string memory sender,
         address contractAddr
-    ) public {
+    ) external onlyOwner {
         // check if id is already taken
         Deposit memory deposit;
         deposit = Deposit(

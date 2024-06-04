@@ -28,6 +28,10 @@ export default function RootLayout({ children }) {
             <meta name="twitter:description" content={metadata.description} />
             <meta name="twitter:image" content={metadata.image} />
 
+            {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+            <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet"></link> */}
+
             <title>{metadata.title}</title>
             <body className={inter.className}>
                 <Providers>

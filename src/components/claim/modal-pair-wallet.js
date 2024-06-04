@@ -80,7 +80,7 @@ const ModalPairWallet = ({ buttonText, item, claimComplete, setClaimComplete }) 
                         />
                         <button 
                             type="button" 
-                            className="w-full px-2 rounded-r-md h-10 w-10 bg-gray-800 focus:outline-none"
+                            className="px-2 rounded-r-md h-10 w-10 bg-gray-800 focus:outline-none"
                             onClick={() => useMetamaskAddress()}
                         >
                             <img src="/metamask.png" className="w-full" alt="metamask"/>

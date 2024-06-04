@@ -27,7 +27,7 @@ const DepositLink = ({ id }) =>  {
 
     return (
         <>
-            <div className="flex flex-col text-center link-page">
+            <div className="flex flex-col text-center mt-12 p-5">
                 <h3 className="text-xl font-bold">Here is your Link with Crypto!</h3>
                 <div className="my-10">
                     <div className="flex flex-wrap items-stretch w-full max-w-xl mx-auto relative">
@@ -54,7 +54,7 @@ const DepositLink = ({ id }) =>  {
                 </div>
 
                 <h3 className="text-xl font-bold">Send this link to a Friend</h3>
-                <div className="my-10 mx-auto flex">
+                <div className="my-5 mx-auto flex">
                     <WhatsappShareButton
                         url={linkResult}
                         title={title}

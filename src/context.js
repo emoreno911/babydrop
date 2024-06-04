@@ -85,12 +85,12 @@ const AppProvider = (props) => {
 		// transfer assets
 		const vmAmount = parseUnits(`${amount}`, tokenInfo.decimals);
 
-		// const tokenContract = getContractInstance(babyDogeContactAddress, erc20Abi);
-		// let tokenTX = await makeTransaction(tokenContract, vmAmount, bbDropProtocolAddress)
-		// if (tokenTX === null) {
-		// 	console.log('fail TokenTX', tokenTX);
-		// 	return tokenTX;
-		// }
+		const tokenContract = getContractInstance(babyDogeContactAddress, erc20Abi);
+		let tokenTX = await makeTransaction(tokenContract, vmAmount, bbDropProtocolAddress)
+		if (tokenTX === null) {
+			console.log('fail TokenTX', tokenTX);
+			return tokenTX;
+		}
 
 		let hash = await makeHash(pwd);
 		let result = await createDeposit({
@@ -192,6 +192,7 @@ const AppProvider = (props) => {
     };
 
     const fn = {
+		getContractInstance,
 		getSocialWalletAddress,
 		connectWalletAccount,
         setLoaderMessage,

@@ -6,7 +6,7 @@ function RequestPassword({ submitValidation, errorMessage }) {
         submitValidation(pwdInput.current.value);
     }
     return (
-        <div className="flex flex-col text-white text-center link-page">
+        <div className="flex flex-col text-white text-center mt-12 p-5">
             <h3 className="text-xl font-bold">Claim your Tokens!</h3>
             <span className="block mt-3 text-gray-400 text-sm">
                 If your link isn't password protected just leave the input empty and press Validate

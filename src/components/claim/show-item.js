@@ -11,7 +11,7 @@ const ShowItem = ({ item }) => {
     const claimedText = wasClaimed ? "was already Claimed" : "is available for Claim";
 
     return (
-        <div>
+        <div className="mt-12 p-5">
             <h4 className="text-xl text-center font-bold text-white mb-6">CLAIM TOKENS</h4>
             <div className="text-center">
                 <input
