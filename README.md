@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Babydrop
 
-## Getting Started
+Send BabyDoge to anyone using a simple link on the Binance Smart Chain
 
-First, run the development server:
+https://babydrop.vercel.app/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## About the project
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Babydrop allows you to send BabyDoge to anyone by using a simple link, this way you can onboard your friends to the community just by sending them a link via email or with your favorite messaging app.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+To accomplish this all you have to do is to connect your wallet to the dApp and put the amount of BabyDoge you wish to send then the Smart Contract will proceed to deposit said asset in its vault and generate a unique link for it, this link can be password protected if you want. After that you can share the link with one of your friends, who can claim the tokens at any time and transfer them to a EOA or generate a social wallet (a Smart Contract wallet deployed via minimal proxy that can be associated with a Google/Facebook/Twitter account to be managed in a very similar way to web2).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The goal is to create an experience as friendly as possible for those users who have low to no contact with Crypto or DeFi, and with that to increase the number of members interacting in the BabyDoge community.
 
-## Learn More
+![Screenshot 2024-06-04 183905.png](https://cdn.dorahacks.io/static/files/18fe569daeb9a9e34ce46c640fd8fd7a.png)
 
-To learn more about Next.js, take a look at the following resources:
+## Contribution and potential for the BabyDoge community
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project comes with a fast and easy way to attract new users to the community, because using Links and Social Wallets the entry barrier is significantly lowered and if you add to that the low BSC fees, a great incentive to experiment is created. For more experienced crypto and web3 users, it can represent a useful tool for casual transactions, giveaways and airdrops within social networks and messaging applications.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+In future steps it could be a functionality to integrate within the babydogeswap.com services, including the possibility of creating links for other BRC20 tokens and paying the creation fees with BabyDoge.
