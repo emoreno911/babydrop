@@ -15,8 +15,8 @@ const AppProvider = (props) => {
     const [walletClient, setWalletClient] = useState(null);
 	const [currentChain, setCurrentChain] = useState(initialChain);
     const [loaderMessage, setLoaderMessage] = useState(null);
-	const [tokenInfo, setTokenInfo] = useState({})
 	const [validatedData, setValidatedData] = useState({});
+	const [tokenInfo, setTokenInfo] = useState({"symbol":"BabyDoge","name":"Baby Doge Coin","decimals":9,"balance":0})
 
     useEffect(() => {
         if (!address) {
@@ -129,6 +129,7 @@ const AppProvider = (props) => {
 				amount: decimalAmount,
 				tokenContractAddr
 			}
+			console.log(tokenInfo)
 			setValidatedData(result)
 			return result;
 		}

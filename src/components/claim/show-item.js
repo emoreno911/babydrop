@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import ModalPairWallet from "./modal-pair-wallet";
 import ModalSocialWallet from "./modal-social-wallet";
-import { divideByDecimals } from "@/src/lib/myutils";
 
 const ShowItem = ({ item }) => {
     const { amount, sender, isClaimed, tokenContractAddr } = item
     const symbol = "BABYDOGE"
-    const decimals = 9
 
     const [claimComplete, setClaimComplete] = useState(false);
     const [wasClaimed, setWasClaimed] = useState(isClaimed !== "0");
@@ -18,7 +16,7 @@ const ShowItem = ({ item }) => {
             <div className="text-center">
                 <input
                     type="number"
-                    value={divideByDecimals(amount, decimals)}
+                    value={amount}
                     readOnly={true}
                     className="bg-transparent text-white text-6xl text-center block border-b-2 w-1/2 mx-auto mb-3 focus:outline-none focus:border-yellow-500"
                 />
