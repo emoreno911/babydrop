@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/src/lib/firebase";
+import { auth, logout } from "@/src/lib/firebase";
 import { useApp } from "@/src/context";
 import { formatBalance, isNullAddress } from "@/src/lib/myutils";
 import { getTokenInfo } from "@/src/service";
@@ -62,6 +62,7 @@ const SocialWallet = () => {
                         <div className="flex gap-2 w-full bg-slate-900 rounded-md p-5">
                             <img src={user.photoURL} className="w-20 h-20 mr-2" alt="" />
                             <div className="flex flex-col justify-center">
+                                {/* <button className="bg-red-300" onClick={() => logout()} >Logout</button> */}
                                 <p>{user.displayName}</p>
                                 <p>{user.email}</p>
                                 {

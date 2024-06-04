@@ -15,15 +15,16 @@ const WithdrawForm = ({ tokenInfo, socialWalletAddr }) => {
     const pincodeInput = useRef();
 
     const handleSubmit = async () => {
-        if (isProcessing)
-            return;
+        // if (isProcessing)
+        //     return;
 
         setTxid("");
         const toAddress = addressInput.current.value;
         const pincode = pincodeInput.current.value;
         
         // Full withdrawal
-        const amount = tokenInfo.balance
+        const amountBig = tokenInfo.balance.toString();
+        const amount = multiplyByDecimals(amountBig, 0); // convert to uint
 
         // Partial withdrawal
         // const intAmountTotal = divideByDecimals(tokenInfo.balance.toString(), tokenInfo.decimals)
