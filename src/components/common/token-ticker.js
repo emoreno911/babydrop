@@ -1,4 +1,23 @@
+"use client"
+
+import { useEffect, useState } from "react"
+
 const TokenTicker = () => {
+    const [price, setPrice] = useState(0)
+    const [percent, setPercent] = useState(0)
+
+    useEffect(() => {
+        const url = "https://api.cryptorank.io/v0/tickers?isTickersForPriceCalc=true&limit=1&coinKeys=baby-doge-coin"
+        fetch(url).then(r => r.json())
+            .then(response => {
+                setPrice(response.data[0].last.toString())
+                setPercent(response.data[0].changePercent.toString())
+            }).catch(err => {
+                setPrice(0)
+                setPercent(0)
+            })
+    }, [])
+
     return (
         <div className="w-full bg-slate-900 rounded-md p-5">
             <div className="flex gap-3 items-start pb-5">
@@ -6,8 +25,8 @@ const TokenTicker = () => {
                 <div>
                     <div className="text-xl pb-1 font-semibold">BABYDOGE</div>
                     <div className="font-mono text-xl">
-                        <span>$0.00000000118</span>
-                        <span className="text-red-500 ml-2">-0.2%</span>
+                        <span>${price}</span>
+                        <span className="text-yellow-500 ml-2">{percent}%</span>
                     </div>
                 </div>
             </div>
