@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, createPublicClient, bytesToHex, isAddress } from "viem";
-import { bsc, bscTestnet } from "viem/chains";
+import { createWalletClient, http, custom, parseUnits, getContract, erc20Abi, createPublicClient, isAddress } from "viem";
 import { useAccount } from "wagmi";
 import { babyDogeContactAddress, bbDropProtocolABI, bbDropProtocolAddress, initialChain } from "./constants";
 import { createDeposit, deploySCWallet, executeClaim, makeTransaction, validateClaim, getSocialWallet, withdrawFromSCWallet } from "./service";

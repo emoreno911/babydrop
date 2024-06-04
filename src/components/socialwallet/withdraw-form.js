@@ -23,11 +23,11 @@ const WithdrawForm = ({ tokenInfo, socialWalletAddr }) => {
         const pincode = pincodeInput.current.value;
         
         // Full withdrawal
-        //const amount = tokenInfo.balance
+        const amount = tokenInfo.balance
 
         // Partial withdrawal
-        const intAmountTotal = divideByDecimals(tokenInfo.balance.toString(), tokenInfo.decimals)
-        const amount = multiplyByDecimals(intAmountTotal * 0.1, tokenInfo.decimals)
+        // const intAmountTotal = divideByDecimals(tokenInfo.balance.toString(), tokenInfo.decimals)
+        // const amount = multiplyByDecimals(intAmountTotal * 0.1, tokenInfo.decimals)
         
         if (toAddress === "" || pincode === "") {
             setErrorMessage("Fill all fields please");
